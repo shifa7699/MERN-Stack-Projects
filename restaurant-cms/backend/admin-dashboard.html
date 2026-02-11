@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background: #f5576c;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header .header-content {
+    flex: 1;
+  }
+
+  header .header-buttons {
+    display: flex;
+    gap: 15px;
+  }
+
+  header a, header button {
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+
+  header a:hover, header button:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  input,
+  button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  button {
+    background: #f5576c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background: #f093fb;
+  }
+
+  #message {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: green;
+  }
+
+  .menu-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  .menu-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    position: relative;
+    transition: 0.3s;
+  }
+
+  .menu-card:hover {
+    border: 2px solid silver;
+    box-shadow: 0 4px 15px rgba(192, 192, 192, 0.5);
+  }
+
+  .menu-card img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .menu-card h4 {
+    margin: 5px 0;
+    color: #333;
+  }
+
+  .menu-card p {
+    margin: 0;
+    color: #555;
+  }
+
+  .menu-card .category {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+  }
+
+  .menu-card .buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .update-btn {
+    background: #f5576c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .update-btn:hover {
+    background: #f093fb;
+  }
+
+  .delete-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .delete-btn:hover {
+    background: #c00;
+  }
+
+  .add-dish-btn {
+    background: #f5576c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .add-dish-btn:hover {
+    background: #f093fb;
+  }
+
+  .add-form {
+    display: none;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+  }
+
+  .add-form.show {
+    display: block;
+  }
+
+  .add-form h3 {
+    margin-top: 0;
+    color: #333;
+  }
+
+  .add-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-form input,
+  .add-form select,
+  .add-form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .add-form button {
+    background: #f5576c;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .add-form button:hover {
+    background: #f093fb;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>Restaurant Admin Dashboard</h1>
+    </div>
+    <!-- <div class="header-buttons">
+      <a href="http://localhost:5177/">Home</a>
+      <a href="/">Logout</a>
+    </div> -->
+  </header>
+  <div class="container">
+    <button class="add-dish-btn" onclick="toggleAddForm()">Add New Dish</button>
+    <div class="add-form" id="addForm">
+      <h3>Add New Menu Item</h3>
+      <form action="/add-menu" method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Dish Name" required>
+        <input type="number" name="price" placeholder="Price" required>
+        <select name="category" required>
+          <option value="">Select Category</option>
+          <option value="veg">Vegetarian</option>
+          <option value="non-veg">Non-Vegetarian</option>
+        </select>
+        <input type="file" name="imageFile" accept="image/*" required>
+        <button type="submit">Add Item</button>
+      </form>
+    </div>
+    <div id="message"><!-- MESSAGE --></div>
+    <h2>Menu Items</h2>
+    <div class="menu-items" id="menuItems">
+      <!-- Menu items dynamically inserted here -->
+    </div>
+  </div>
+
+  <script>
+    function toggleAddForm() {
+      const form = document.getElementById('addForm');
+      form.classList.toggle('show');
+    }
+
+    function updateItem(id, name, price, category) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/update-menu/' + id;
+      form.enctype = 'multipart/form-data';
+      form.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000;';
+
+      form.innerHTML = `
+        <h3>Update Menu Item</h3>
+        <input type="text" name="name" value="${name}" required placeholder="Dish Name">
+        <input type="number" name="price" value="${price}" required placeholder="Price">
+        <select name="category" required>
+          <option value="veg" ${category === 'veg' ? 'selected' : ''}>Vegetarian</option>
+          <option value="non-veg" ${category === 'non-veg' ? 'selected' : ''}>Non-Vegetarian</option>
+        </select>
+        <input type="file" name="imageFile" accept="image/*">
+        <button type="submit">Update Item</button>
+        <button type="button" onclick="this.parentElement.remove()">Cancel</button>
+      `;
+
+      document.body.appendChild(form);
+    }
+
+    // Load menu items on page load
+    async function loadMenuItems() {
+      try {
+        const response = await fetch('/api/menu');
+        const items = await response.json();
+        const menuItemsDiv = document.getElementById('menuItems');
+
+        if (items.length === 0) {
+          menuItemsDiv.innerHTML = '<p>No menu items found. Add some items using the form above.</p>';
+          return;
+        }
+
+        const menuHTML = items.map(item => `
+          <div class="menu-card">
+            <img src="${item.image}" alt="${item.name}">
+            <h4>${item.name}</h4>
+            <p>Price: ₹${item.price}</p>
+            <div class="category">${item.category === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'}</div>
+            <div class="buttons">
+              <button class="update-btn" onclick="updateItem('${item._id}', '${item.name}', '${item.price}', '${item.category}')">Update</button>
+              <button class="delete-btn" onclick="window.location.href='/delete-menu/${item._id}'">Delete</button>
+            </div>
+          </div>
+        `).join('');
+
+        menuItemsDiv.innerHTML = menuHTML;
+      } catch (error) {
+        console.error('Error loading menu items:', error);
+        document.getElementById('menuItems').innerHTML = '<p>Error loading menu items.</p>';
+      }
+    }
+
+    // Load menu items when page loads
+    window.addEventListener('load', loadMenuItems);
+  </script>
+</body>
+</html>

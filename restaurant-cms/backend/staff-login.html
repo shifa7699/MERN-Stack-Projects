@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 320px;
+    }
+    h2 {
+       margin-bottom: 20px;
+       color: #333;
+      }
+    input {
+       width: 100%;
+       padding: 10px;
+       margin: 8px 0;
+        border: 1px solid #ccc;
+         border-radius: 5px;
+        }
+    button {
+      background: #f5576c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+       margin-top: 10px;
+       font-weight: bold;
+      }
+    button:hover {
+       background: #f093fb;
+      }
+    #error-msg {
+      color: red;
+       margin-bottom: 10px;
+       font-size: 14px;
+      }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Staff Login</h2>
+    <div id="error-msg"><!-- ERROR_MSG --></div>
+    <form id="loginForm" action="/login" method="POST">
+      <input type="hidden" name="role" value="staff">
+      <input type="text" name="userid" placeholder="Staff ID" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(data).toString(),
+        });
+        const result = await response.json();
+        if (result.success) {
+          window.location.href = result.redirect;
+        } else {
+          document.getElementById('error-msg').textContent = result.error;
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        document.getElementById('error-msg').textContent = 'An error occurred during login.';
+      }
+    });
+  </script>
+</body>
+</html>
